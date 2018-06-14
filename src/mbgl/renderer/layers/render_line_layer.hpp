@@ -4,9 +4,12 @@
 #include <mbgl/style/layers/line_layer_impl.hpp>
 #include <mbgl/style/layers/line_layer_properties.hpp>
 #include <mbgl/programs/uniforms.hpp>
-#include <mbgl/util/image.hpp>
+#include <mbgl/style/image_impl.hpp>
+#include <mbgl/style/image_impl.hpp>
 
 namespace mbgl {
+
+class PatternLayout;
 
 struct LineFloorwidth : style::DataDrivenPaintProperty<float, attributes::a_floorwidth, uniforms::u_floorwidth> {
     static float defaultValue() { return 1; }
@@ -26,6 +29,8 @@ public:
     bool hasTransition() const override;
     void render(PaintParameters&, RenderSource*) override;
 
+    RenderLinePaintProperties::PossiblyEvaluated paintProperties() const;
+
     bool queryIntersectsFeature(
             const GeometryCoordinates&,
             const GeometryTileFeature&,
@@ -37,7 +42,10 @@ public:
     void updateColorRamp();
 
     std::unique_ptr<Bucket> createBucket(const BucketParameters&, const std::vector<const RenderLayer*>&) const override;
-
+    std::unique_ptr<PatternLayout> createLayout(const BucketParameters&,
+                                               const std::vector<const RenderLayer*>&,
+                                               std::unique_ptr<GeometryTileLayer>,
+                                               ImageDependencies&) const;
     // Paint properties
     style::LinePaintProperties::Unevaluated unevaluated;
     RenderLinePaintProperties::PossiblyEvaluated evaluated;
