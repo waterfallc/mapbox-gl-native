@@ -1859,41 +1859,33 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         styleNames = @[
-            @"Streets",
-            @"Outdoors",
-            @"Light",
-            @"Dark",
-            @"Satellite",
-            @"Satellite Streets",
+            @"Desert Planet",
+            @"Terminal",
         ];
         styleURLs = @[
-            [MGLStyle streetsStyleURL],
-            [MGLStyle outdoorsStyleURL],
-            [MGLStyle lightStyleURL],
-            [MGLStyle darkStyleURL],
-            [MGLStyle satelliteStyleURL],
-            [MGLStyle satelliteStreetsStyleURL]
-            
+            [NSURL URLWithString:@"mapbox://styles/mapbox/cj6o7atdb1dbd2rpq8ztesezs"],
+            [NSURL URLWithString:@"mapbox://styles/mapbox/cj62n87yx3mvi2rp93sfp2w9z"],
+            //[MGLStyle streetsStyleURL],
         ];
         NSAssert(styleNames.count == styleURLs.count, @"Style names and URLs don’t match.");
 
-        // Make sure defaultStyleURLs is up-to-date.
-        unsigned numMethods = 0;
-        Method *methods = class_copyMethodList(object_getClass([MGLStyle class]), &numMethods);
-        unsigned numStyleURLMethods = 0;
-        for (NSUInteger i = 0; i < numMethods; i++) {
-            Method method = methods[i];
-            if (method_getNumberOfArguments(method) == 3 /* _cmd, self, version */) {
-                SEL selector = method_getName(method);
-                NSString *name = @(sel_getName(selector));
-                if ([name hasSuffix:@"StyleURLWithVersion:"]) {
-                    numStyleURLMethods += 1;
-                }
-            }
-        }
-        NSAssert(numStyleURLMethods == styleNames.count,
-                 @"MGLStyle provides %u default styles but iosapp only knows about %lu of them.",
-                 numStyleURLMethods, (unsigned long)styleNames.count);
+//        // Make sure defaultStyleURLs is up-to-date.
+//        unsigned numMethods = 0;
+//        Method *methods = class_copyMethodList(object_getClass([MGLStyle class]), &numMethods);
+//        unsigned numStyleURLMethods = 0;
+//        for (NSUInteger i = 0; i < numMethods; i++) {
+//            Method method = methods[i];
+//            if (method_getNumberOfArguments(method) == 3 /* _cmd, self, version */) {
+//                SEL selector = method_getName(method);
+//                NSString *name = @(sel_getName(selector));
+//                if ([name hasSuffix:@"StyleURLWithVersion:"]) {
+//                    numStyleURLMethods += 1;
+//                }
+//            }
+//        }
+//        NSAssert(numStyleURLMethods == styleNames.count,
+//                 @"MGLStyle provides %u default styles but iosapp only knows about %lu of them.",
+//                 numStyleURLMethods, (unsigned long)styleNames.count);
     });
 
     self.styleIndex = (self.styleIndex + 1) % styleNames.count;
