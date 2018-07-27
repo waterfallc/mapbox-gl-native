@@ -5,6 +5,30 @@ namespace android {
 namespace java {
 namespace lang {
 
+// String
+
+jni::Object<String> String::New(JNIEnv& env, jni::String value) {
+    static auto constructor = String::javaClass.GetConstructor<jni::String>(env);
+    return String::javaClass.New(env, constructor, value);
+}
+
+jni::String String::toUpperCase(JNIEnv& env, jni::String value) {
+    static auto method = javaClass.GetMethod<jni::String ()>(env, "toUpperCase");
+    return String::New(env, value).Call(env, method);
+}
+
+jni::String String::toLowerCase(JNIEnv& env, jni::String value) {
+    static auto method = javaClass.GetMethod<jni::String ()>(env, "toLowerCase");
+    return String::New(env, value).Call(env, method);
+}
+
+void String::registerNative(jni::JNIEnv& env) {
+    // Lookup the class
+    javaClass = *jni::Class<String>::Find(env).NewGlobalRef(env).release();
+}
+
+jni::Class<String> String::javaClass;
+
 // Float
 
 jni::Object<Float> Float::valueOf(JNIEnv &env, jfloat value) {
