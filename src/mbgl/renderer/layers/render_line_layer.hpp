@@ -5,7 +5,6 @@
 #include <mbgl/style/layers/line_layer_properties.hpp>
 #include <mbgl/programs/uniforms.hpp>
 #include <mbgl/style/image_impl.hpp>
-#include <mbgl/style/image_impl.hpp>
 
 namespace mbgl {
 
@@ -54,6 +53,7 @@ public:
 
 private:
     float getLineWidth(const GeometryTileFeature&, const float) const;
+    CrossfadeParameters crossfade;
     PremultipliedImage colorRamp;
     optional<gl::Texture> colorRampTexture;
 };
