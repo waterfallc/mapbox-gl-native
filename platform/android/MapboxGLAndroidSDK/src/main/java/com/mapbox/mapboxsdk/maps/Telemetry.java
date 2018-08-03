@@ -69,7 +69,7 @@ public class Telemetry {
     private static final Telemetry INSTANCE = new Telemetry();
   }
 
-  static MapboxTelemetry obtainTelemetry() {
+  public static MapboxTelemetry obtainTelemetry() {
     return TelemetryHolder.INSTANCE.telemetry;
   }
 }
