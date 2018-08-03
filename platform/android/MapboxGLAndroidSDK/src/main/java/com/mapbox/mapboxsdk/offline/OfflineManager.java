@@ -7,9 +7,13 @@ import android.os.Looper;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 
+import com.mapbox.android.telemetry.MapEventFactory;
+import com.mapbox.android.telemetry.MapboxTelemetry;
+import com.mapbox.android.telemetry.TelemetryUtils;
 import com.mapbox.mapboxsdk.LibraryLoader;
 import com.mapbox.mapboxsdk.R;
 import com.mapbox.mapboxsdk.geometry.LatLngBounds;
+import com.mapbox.mapboxsdk.maps.Telemetry;
 import com.mapbox.mapboxsdk.net.ConnectivityReceiver;
 import com.mapbox.mapboxsdk.storage.FileSource;
 
@@ -235,6 +239,14 @@ public class OfflineManager {
         });
       }
     });
+
+    MapboxTelemetry telemetry = Telemetry.obtainTelemetry();
+    MapEventFactory mapEventFactory = new MapEventFactory();
+    telemetry.push(mapEventFactory.createMapOfflineEvent(
+      definition.getBounds().getLatNorth(),
+      definition.getBounds().getLatSouth(),
+      definition.getBounds().getLonEast(),
+      definition.getBounds().getLonWest()));
   }
 
   /**
