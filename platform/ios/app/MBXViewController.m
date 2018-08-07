@@ -236,7 +236,10 @@ CLLocationCoordinate2D randomWorldCoordinate() {
     self.debugLoggingEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"MGLMapboxMetricsDebugLoggingEnabled"];
     self.mapView.showsScale = YES;
     self.mapView.showsUserHeadingIndicator = YES;
-    self.hudLabel.titleLabel.font = [UIFont monospacedDigitSystemFontOfSize:10 weight:UIFontWeightRegular];
+    
+    if ([UIFont respondsToSelector:@selector(monospacedDigitSystemFontOfSize:weight:)]) {
+        self.hudLabel.titleLabel.font = [UIFont monospacedDigitSystemFontOfSize:10 weight:UIFontWeightRegular];
+    }
 
     if ([MGLAccountManager accessToken].length)
     {
@@ -266,7 +269,9 @@ CLLocationCoordinate2D randomWorldCoordinate() {
             [self.mapView reloadStyle:self];
         }];
         [alertController addAction:OKAction];
-        alertController.preferredAction = OKAction;
+        if ([alertController respondsToSelector:@selector(preferredAction)]) {
+            alertController.preferredAction = OKAction;
+        }
 
         [self presentViewController:alertController animated:YES completion:nil];
     }
