@@ -399,9 +399,6 @@
 		DA1DC99B1CB6E064006E619F /* MBXViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DA1DC99A1CB6E064006E619F /* MBXViewController.m */; };
 		DA1DC99F1CB6E088006E619F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA1DC99E1CB6E088006E619F /* Assets.xcassets */; };
 		DA1F8F3D1EBD287B00367E42 /* MGLDocumentationGuideTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA1F8F3C1EBD287B00367E42 /* MGLDocumentationGuideTests.swift */; };
-		DA25D5C01CCD9F8400607828 /* Root.plist in Resources */ = {isa = PBXBuildFile; fileRef = DA25D5BF1CCD9F8400607828 /* Root.plist */; };
-		DA25D5C61CCDA06800607828 /* Root.strings in Resources */ = {isa = PBXBuildFile; fileRef = DA25D5C41CCDA06800607828 /* Root.strings */; };
-		DA25D5CD1CCDA11500607828 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DA25D5B91CCD9EDE00607828 /* Settings.bundle */; };
 		DA2784FC1DF02FF4001D5B8D /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DA2784FB1DF02FF4001D5B8D /* Media.xcassets */; };
 		DA27C24E1CBB3811000B0ECD /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA27C24D1CBB3811000B0ECD /* GLKit.framework */; };
 		DA27C24F1CBB4C11000B0ECD /* MGLAccountManager_Private.h in Headers */ = {isa = PBXBuildFile; fileRef = DA8847FF1CBAFA6200AB86E3 /* MGLAccountManager_Private.h */; };
@@ -651,26 +648,12 @@
 			remoteGlobalIDString = 16376B2E1FFDB4B40000563E;
 			remoteInfo = "Integration Test Harness";
 		};
-		DA25D5C71CCDA0C100607828 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DA1DC9421CB6C1C2006E619F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DA25D5B81CCD9EDE00607828;
-			remoteInfo = settings;
-		};
 		DA25D5C91CCDA0CC00607828 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DA1DC9421CB6C1C2006E619F /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = DA8933D41CCD306400E68420;
 			remoteInfo = bundle;
-		};
-		DA25D5CB1CCDA0CC00607828 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DA1DC9421CB6C1C2006E619F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = DA25D5B81CCD9EDE00607828;
-			remoteInfo = settings;
 		};
 		DA2E88571CC036F400F24E7B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1045,7 +1028,6 @@
 		DA1DC99A1CB6E064006E619F /* MBXViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBXViewController.m; sourceTree = "<group>"; };
 		DA1DC99E1CB6E088006E619F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DA1F8F3C1EBD287B00367E42 /* MGLDocumentationGuideTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MGLDocumentationGuideTests.swift; path = ../../darwin/test/MGLDocumentationGuideTests.swift; sourceTree = "<group>"; };
-		DA25D5B91CCD9EDE00607828 /* Settings.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Settings.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA25D5BF1CCD9F8400607828 /* Root.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Root.plist; sourceTree = "<group>"; };
 		DA25D5C51CCDA06800607828 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Root.strings; sourceTree = "<group>"; };
 		DA2784FB1DF02FF4001D5B8D /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Media.xcassets; path = ../../darwin/test/Media.xcassets; sourceTree = "<group>"; };
@@ -1769,7 +1751,6 @@
 				DAA4E4131CBB71D400178DFB /* libMapbox.a */,
 				DA2E88511CC036F400F24E7B /* test.xctest */,
 				DA8933D51CCD306400E68420 /* Mapbox.bundle */,
-				DA25D5B91CCD9EDE00607828 /* Settings.bundle */,
 				16376B071FFD9DAF0000563E /* integration.xctest */,
 				16376B2F1FFDB4B40000563E /* Integration Test Harness.app */,
 			);
@@ -2538,21 +2519,6 @@
 			productReference = DA1DC94A1CB6C1C2006E619F /* Mapbox GL.app */;
 			productType = "com.apple.product-type.application";
 		};
-		DA25D5B81CCD9EDE00607828 /* settings */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = DA25D5BE1CCD9EDE00607828 /* Build configuration list for PBXNativeTarget "settings" */;
-			buildPhases = (
-				DA25D5B71CCD9EDE00607828 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = settings;
-			productName = settings;
-			productReference = DA25D5B91CCD9EDE00607828 /* Settings.bundle */;
-			productType = "com.apple.product-type.bundle";
-		};
 		DA2E88501CC036F400F24E7B /* test */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = DA2E88591CC036F400F24E7B /* Build configuration list for PBXNativeTarget "test" */;
@@ -2583,7 +2549,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				DA25D5C81CCDA0C100607828 /* PBXTargetDependency */,
 			);
 			name = dynamic;
 			productName = framework;
@@ -2618,7 +2583,6 @@
 			);
 			dependencies = (
 				DA25D5CA1CCDA0CC00607828 /* PBXTargetDependency */,
-				DA25D5CC1CCDA0CC00607828 /* PBXTargetDependency */,
 			);
 			name = static;
 			productName = static;
@@ -2666,9 +2630,6 @@
 					DA1DC9491CB6C1C2006E619F = {
 						CreatedOnToolsVersion = 7.3;
 						LastSwiftMigration = 0820;
-					};
-					DA25D5B81CCD9EDE00607828 = {
-						CreatedOnToolsVersion = 7.3;
 					};
 					DA2E88501CC036F400F24E7B = {
 						CreatedOnToolsVersion = 7.3;
@@ -2730,7 +2691,6 @@
 				DA8847D11CBAF91600AB86E3 /* dynamic */,
 				DAA4E4121CBB71D400178DFB /* static */,
 				DA8933D41CCD306400E68420 /* bundle */,
-				DA25D5B81CCD9EDE00607828 /* settings */,
 				DA2E88501CC036F400F24E7B /* test */,
 				16376B061FFD9DAF0000563E /* integration */,
 				16376B2E1FFDB4B40000563E /* Integration Test Harness */,
@@ -2760,7 +2720,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DA25D5CD1CCDA11500607828 /* Settings.bundle in Resources */,
 				DD4823771D94AE6C00EB71B7 /* numeric_filter_style.json in Resources */,
 				DA1DC9701CB6C6CE006E619F /* points.geojson in Resources */,
 				353BAEF61D646370009A8DA9 /* amsterdam.geojson in Resources */,
@@ -2773,15 +2732,6 @@
 				1F26B6C320E1A351007BCC21 /* simple_route.json in Resources */,
 				DD4823751D94AE6C00EB71B7 /* fill_filter_style.json in Resources */,
 				DA1DC99F1CB6E088006E619F /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DA25D5B71CCD9EDE00607828 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				DA25D5C61CCDA06800607828 /* Root.strings in Resources */,
-				DA25D5C01CCD9F8400607828 /* Root.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3209,20 +3159,10 @@
 			target = 16376B2E1FFDB4B40000563E /* Integration Test Harness */;
 			targetProxy = CABE5DAB2072FA660003AF3C /* PBXContainerItemProxy */;
 		};
-		DA25D5C81CCDA0C100607828 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DA25D5B81CCD9EDE00607828 /* settings */;
-			targetProxy = DA25D5C71CCDA0C100607828 /* PBXContainerItemProxy */;
-		};
 		DA25D5CA1CCDA0CC00607828 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DA8933D41CCD306400E68420 /* bundle */;
 			targetProxy = DA25D5C91CCDA0CC00607828 /* PBXContainerItemProxy */;
-		};
-		DA25D5CC1CCDA0CC00607828 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = DA25D5B81CCD9EDE00607828 /* settings */;
-			targetProxy = DA25D5CB1CCDA0CC00607828 /* PBXContainerItemProxy */;
 		};
 		DA2E88581CC036F400F24E7B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -3665,26 +3605,6 @@
 			};
 			name = Release;
 		};
-		DA25D5BC1CCD9EDE00607828 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = framework/Settings.bundle/Root.plist;
-				PRODUCT_NAME = Settings;
-				SKIP_INSTALL = YES;
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Debug;
-		};
-		DA25D5BD1CCD9EDE00607828 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = framework/Settings.bundle/Root.plist;
-				PRODUCT_NAME = Settings;
-				SKIP_INSTALL = YES;
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Release;
-		};
 		DA2E885A1CC036F400F24E7B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 55D8C9941D0F133500F42F10 /* config.xcconfig */;
@@ -3959,15 +3879,6 @@
 			buildConfigurations = (
 				DA1DC9621CB6C1C2006E619F /* Debug */,
 				DA1DC9631CB6C1C2006E619F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		DA25D5BE1CCD9EDE00607828 /* Build configuration list for PBXNativeTarget "settings" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				DA25D5BC1CCD9EDE00607828 /* Debug */,
-				DA25D5BD1CCD9EDE00607828 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

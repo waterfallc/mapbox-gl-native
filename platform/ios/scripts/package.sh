@@ -137,8 +137,6 @@ if [[ ${BUILD_FOR_DEVICE} == true ]]; then
             ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/${NAME}.framework/${NAME} \
             -create -output ${OUTPUT}/dynamic/${NAME}.framework/${NAME} | echo
     fi
-
-    cp -rv ${PRODUCTS}/${BUILDTYPE}-iphoneos/Settings.bundle ${OUTPUT}
 else
     if [[ ${BUILD_STATIC} == true ]]; then
         step "Assembling static library for iOS Simulator…"
@@ -162,8 +160,6 @@ else
                 ${OUTPUT}/dynamic/
         fi
     fi
-
-    cp -rv ${PRODUCTS}/${BUILDTYPE}-iphonesimulator/Settings.bundle ${OUTPUT}
 fi
 
 if [[ ${SYMBOLS} = NO ]]; then
