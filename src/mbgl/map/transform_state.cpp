@@ -352,20 +352,24 @@ bool TransformState::rotatedNorth() const {
 }
 
 void TransformState::constrain(double& scale_, double& x_, double& y_) const {
-    // Constrain minimum scale to avoid zooming out far enough to show off-world areas.
-    scale_ = util::max(scale_,
-                       static_cast<double>(rotatedNorth() ? size.height : size.width) / util::tileSize,
-                       static_cast<double>(rotatedNorth() ? size.width : size.height) / util::tileSize);
-
-    // Constrain min/max pan to avoid showing off-world areas.
-    if (constrainMode == ConstrainMode::WidthAndHeight) {
-        double max_x = (scale_ * util::tileSize - (rotatedNorth() ? size.height : size.width)) / 2;
-        x_ = std::max(-max_x, std::min(x_, max_x));
+    if (constrainMode == ConstrainMode::None) {
+        return;
     }
 
-    if (constrainMode != ConstrainMode::None) {
-        double max_y = (scale_ * util::tileSize - (rotatedNorth() ? size.width : size.height)) / 2;
-        y_ = std::max(-max_y, std::min(y_, max_y));
+    // Constrain minimum scale to avoid zooming out far enough to show off-world areas on the Y axis.
+    scale_ = util::max(scale_, double(rotatedNorth() ? size.width : size.height) / util::tileSize);
+
+    // Constrain min/max pan to avoid showing off-world areas on the Y axis.
+    double max_y = (scale_ * util::tileSize - (rotatedNorth() ? size.width : size.height)) / 2;
+    y_ = std::max(-max_y, std::min(y_, max_y));
+
+    if (constrainMode == ConstrainMode::WidthAndHeight) {
+        // Constrain minimum scale to avoid zooming out far enough to show off-world areas on the X axis.
+        scale_ = util::max(scale_, double(rotatedNorth() ? size.height : size.width) / util::tileSize);
+
+        // Constrain min/max pan to avoid showing off-world areas on the X axis.
+        double max_x = (scale_ * util::tileSize - (rotatedNorth() ? size.height : size.width)) / 2;
+        x_ = std::max(-max_x, std::min(x_, max_x));
     }
 }
 
