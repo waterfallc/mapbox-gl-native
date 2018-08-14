@@ -14,6 +14,7 @@
 #include <mbgl/style/expression/coercion.hpp>
 #include <mbgl/style/expression/compound_expression.hpp>
 #include <mbgl/style/expression/comparison.hpp>
+#include <mbgl/style/expression/format_expression.hpp>
 #include <mbgl/style/expression/interpolate.hpp>
 #include <mbgl/style/expression/length.hpp>
 #include <mbgl/style/expression/let.hpp>
@@ -109,6 +110,7 @@ const ExpressionRegistry& getExpressionRegistry() {
         {"case", Case::parse},
         {"coalesce", Coalesce::parse},
         {"collator", CollatorExpression::parse},
+        {"format", FormatExpression::parse},
         {"interpolate", parseInterpolate},
         {"length", Length::parse},
         {"let", Let::parse},
