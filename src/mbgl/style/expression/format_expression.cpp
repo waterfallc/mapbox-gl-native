@@ -1,4 +1,3 @@
-#include <mbgl/style/expression/formatted.hpp>
 #include <mbgl/style/expression/format_expression.hpp>
 #include <mbgl/style/expression/literal.hpp>
 #include <mbgl/util/string.hpp>
@@ -7,13 +6,22 @@ namespace mbgl {
 namespace style {
 namespace expression {
 
-FormatExpression::FormatExpression(std::unique_ptr<Expression> text_,
-                                   optional<std::unique_ptr<Expression>> fontScale_,
-                                   optional<std::unique_ptr<Expression>> textFont_)
-: Expression(Kind::FormatExpression, type::Formatted)
-, text(std::move(text_))
-, fontScale(std::move(fontScale_))
-, textFont(std::move(textFont_))
+FormatExpressionSection::FormatExpressionSection(std::unique_ptr<Expression> text_,
+                                                 optional<std::unique_ptr<Expression>> fontScale_,
+                                                 optional<std::unique_ptr<Expression>> textFont_)
+    : text(std::move(text_))
+{
+    if (fontScale_) {
+        fontScale = std::shared_ptr<Expression>(std::move(*fontScale_));
+    }
+    if (textFont_) {
+        textFont = std::shared_ptr<Expression>(std::move(*textFont_));
+    }
+}
+
+FormatExpression::FormatExpression(std::vector<FormatExpressionSection> sections_)
+    : Expression(Kind::FormatExpression, type::Formatted)
+    , sections(std::move(sections_))
 {}
 
 using namespace mbgl::style::conversion;
@@ -32,128 +40,122 @@ ParseResult FormatExpression::parse(const Convertible& value, ParsingContext& ct
     
     std::vector<FormatExpressionSection> sections;
     for (std::size_t i = 1; i < argsLength - 1; i += 2) {
-        auto options = arrayMember(value, 1);
+        auto textArg = arrayMember(value, i);
+        ParseResult text = ctx.parse(textArg, 1, {type::Value});
+        if (!text) {
+            return ParseResult();
+        }
+        auto options = arrayMember(value, i + 1);
         if (!isObject(options)) {
-            ctx.error("Collator options argument must be an object.");
+            ctx.error("Format options argument must be an object.");
             return ParseResult();
         }
         
-        ParseResult text = ctx.parse(args[i], 1, ValueType);
-        if (!text) return null;
-        const kind = text.type.kind;
-        if (kind !== 'string' && kind !== 'value' && kind !== 'null')
-            return context.error(`Formatted text type must be 'string', 'value', or 'null'.`);
-        
-        const options = (args[i + 1]: any);
-        if (typeof options !== "object" || Array.isArray(options))
-            return context.error(`Format options argument must be an object.`);
-        
-        let scale = null;
-        if (options['font-scale']) {
-            scale = context.parse(options['font-scale'], 1, NumberType);
-            if (!scale) return null;
+        const optional<Convertible> fontScaleOption = objectMember(options, "font-scale");
+        ParseResult fontScale;
+        if (fontScaleOption) {
+            fontScale = ctx.parse(*fontScaleOption, 1, {type::Number});
+            if (!fontScale) {
+                return ParseResult();
+            }
         }
         
-        let font = null;
-        if (options['text-font']) {
-            font = context.parse(options['text-font'], 1, array(StringType));
-            if (!font) return null;
+        const optional<Convertible> textFontOption = objectMember(options, "text-font");
+        ParseResult textFont;
+        if (textFontOption) {
+            textFont = ctx.parse(*textFontOption, 1, {type::Array(type::String)});
+            if (!textFont) {
+                return ParseResult();
+            }
         }
-        sections.push({text, scale, font});
+        sections.emplace_back(std::move(*text), std::move(fontScale), std::move(textFont));
     }
     
-    return new FormatExpression(sections);
-
-    auto options = arrayMember(value, 1);
-    if (!isObject(options)) {
-        ctx.error("Collator options argument must be an object.");
-        return ParseResult();
-    }
-    
-    const optional<Convertible> caseSensitiveOption = objectMember(options, "case-sensitive");
-    ParseResult caseSensitive;
-    if (caseSensitiveOption) {
-        caseSensitive = ctx.parse(*caseSensitiveOption, 1, {type::Boolean});
-    } else {
-        caseSensitive = { std::make_unique<Literal>(false) };
-    }
-    if (!caseSensitive) {
-        return ParseResult();
-    }
-    
-    const optional<Convertible> diacriticSensitiveOption = objectMember(options, "diacritic-sensitive");
-    ParseResult diacriticSensitive;
-    if (diacriticSensitiveOption) {
-        diacriticSensitive = ctx.parse(*diacriticSensitiveOption, 1, {type::Boolean});
-    } else {
-        diacriticSensitive = { std::make_unique<Literal>(false) };
-    }
-    if (!diacriticSensitive) {
-        return ParseResult();
-    }
-    
-    const optional<Convertible> localeOption = objectMember(options, "locale");
-    ParseResult locale;
-    if (localeOption) {
-        locale = ctx.parse(*localeOption, 1, {type::String});
-        if (!locale) {
-            return ParseResult();
-        }
-    }
-    
-    return ParseResult(std::make_unique<FormatExpression>(std::move(*caseSensitive), std::move(*diacriticSensitive), std::move(locale)));
+    return ParseResult(std::make_unique<FormatExpression>(std::move(sections)));
 }
 
 void FormatExpression::eachChild(const std::function<void(const Expression&)>& fn) const {
-    fn(*caseSensitive);
-    fn(*diacriticSensitive);
-    if (locale) {
-        fn(**locale);
+    for (auto& section : sections) {
+        fn(*section.text);
+        if (section.fontScale) {
+            fn(**section.fontScale);
+        }
+        if (section.textFont) {
+            fn(**section.textFont);
+        }
     }
 }
 
 bool FormatExpression::operator==(const Expression& e) const {
     if (e.getKind() == Kind::FormatExpression) {
         auto rhs = static_cast<const FormatExpression*>(&e);
-        if ((locale && (!rhs->locale || **locale != **(rhs->locale))) ||
-            (!locale && rhs->locale)) {
+        if (sections.size() != rhs->sections.size()) {
             return false;
         }
-        return *caseSensitive == *(rhs->caseSensitive) &&
-        *diacriticSensitive == *(rhs->diacriticSensitive);
+        for (std::size_t i = 0; i < sections.size(); i++) {
+            const auto& lhsSection = sections.at(i);
+            const auto& rhsSection = rhs->sections.at(i);
+            if (*lhsSection.text != *rhsSection.text) {
+                return false;
+            }
+            if ((lhsSection.fontScale && (!rhsSection.fontScale || **lhsSection.fontScale != **rhsSection.fontScale)) ||
+                (!lhsSection.fontScale && rhsSection.fontScale)) {
+                return false;
+            }
+            if ((lhsSection.textFont && (!rhsSection.textFont || **lhsSection.textFont != **rhsSection.textFont)) ||
+                (!lhsSection.textFont && rhsSection.textFont)) {
+                return false;
+            }
+        }
+        return true;
     }
     return false;
 }
 
 mbgl::Value FormatExpression::serialize() const {
-    std::unordered_map<std::string, mbgl::Value> options;
-    options["case-sensitive"] = caseSensitive->serialize();
-    options["diacritic-sensitive"] = diacriticSensitive->serialize();
-    if (locale) {
-        options["locale"] = (*locale)->serialize();
+    std::vector<mbgl::Value> serialized{{ std::string("format") }};
+    for (const auto& section : sections) {
+        serialized.push_back(section.text->serialize());
+        std::unordered_map<std::string, mbgl::Value> options;
+        if (section.fontScale) {
+            options["font-scale"] = (*section.fontScale)->serialize();
+        }
+        if (section.textFont) {
+            options["text-font"] = (*section.textFont)->serialize();
+        }
+        serialized.push_back(options);
     }
-    return std::vector<mbgl::Value>{{ std::string("collator"), options }};
+    return serialized;
 }
 
 EvaluationResult FormatExpression::evaluate(const EvaluationContext& params) const {
-    auto caseSensitiveResult = caseSensitive->evaluate(params);
-    if (!caseSensitiveResult) {
-        return caseSensitiveResult.error();
-    }
-    auto diacriticSensitiveResult = diacriticSensitive->evaluate(params);
-    if (!diacriticSensitiveResult) {
-        return diacriticSensitiveResult.error();
-    }
-    
-    if (locale) {
-        auto localeResult = (*locale)->evaluate(params);
-        if (!localeResult) {
-            return localeResult.error();
+    std::vector<FormattedSection> evaluatedSections;
+    for (const auto& section : sections) {
+        auto textResult = section.text->evaluate(params);
+        if (!textResult) {
+            return textResult.error();
         }
-        return Collator(caseSensitiveResult->get<bool>(), diacriticSensitiveResult->get<bool>(), localeResult->get<std::string>());
-    } else {
-        return Collator(caseSensitiveResult->get<bool>(), diacriticSensitiveResult->get<bool>());
+
+        optional<double> evaluatedFontScale;
+        if (section.fontScale) {
+            auto fontScaleResult = (*section.fontScale)->evaluate(params);
+            if (!fontScaleResult) {
+                return fontScaleResult.error();
+            }
+            evaluatedFontScale = fontScaleResult->get<double>();
+        }
+
+        optional<std::string> evaluatedTextFont;
+        if (section.textFont) {
+            auto textFontResult = (*section.textFont)->evaluate(params);
+            if (!textFontResult) {
+                return textFontResult.error();
+            }
+            evaluatedTextFont = textFontResult->get<std::string>();
+        }
+        evaluatedSections.emplace_back(textResult->get<std::string>(), evaluatedFontScale, evaluatedTextFont);
     }
+    return Formatted(evaluatedSections);
 }
 
 } // namespace expression

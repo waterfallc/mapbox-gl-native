@@ -460,6 +460,7 @@ set(MBGL_CORE_FILES
     include/mbgl/style/expression/expression.hpp
     include/mbgl/style/expression/find_zoom_curve.hpp
     include/mbgl/style/expression/format_expression.hpp
+    include/mbgl/style/expression/formatted.hpp
     include/mbgl/style/expression/get_covering_stops.hpp
     include/mbgl/style/expression/interpolate.hpp
     include/mbgl/style/expression/interpolator.hpp
@@ -488,6 +489,7 @@ set(MBGL_CORE_FILES
     src/mbgl/style/expression/expression.cpp
     src/mbgl/style/expression/find_zoom_curve.cpp
     src/mbgl/style/expression/format_expression.cpp
+    src/mbgl/style/expression/formatted.cpp
     src/mbgl/style/expression/get_covering_stops.cpp
     src/mbgl/style/expression/interpolate.cpp
     src/mbgl/style/expression/is_constant.cpp

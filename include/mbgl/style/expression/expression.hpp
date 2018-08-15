@@ -134,6 +134,7 @@ enum class Kind : int32_t {
     Any,
     All,
     Comparison,
+    FormatExpression,
 };
 
 class Expression {

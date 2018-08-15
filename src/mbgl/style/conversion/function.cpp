@@ -211,6 +211,10 @@ static optional<std::unique_ptr<Expression>> convertLiteral(type::Type type, con
         [&] (const type::CollatorType&) -> optional<std::unique_ptr<Expression>> {
             assert(false); // No properties use this type.
             return nullopt;
+        },
+        [&] (const type::FormattedType&) -> optional<std::unique_ptr<Expression>> {
+            assert(false); // No properties use this type.
+            return nullopt;
         }
     );
 }

@@ -13,6 +13,7 @@ type::Type typeOf(const Value& value) {
         [&](const std::string&) -> type::Type { return type::String; },
         [&](const Color&) -> type::Type { return type::Color; },
         [&](const Collator&) -> type::Type { return type::Collator; },
+        [&](const Formatted&) -> type::Type { return type::Formatted; },
         [&](const NullValue&) -> type::Type { return type::Null; },
         [&](const std::unordered_map<std::string, Value>&) -> type::Type { return type::Object; },
         [&](const std::vector<Value>& arr) -> type::Type {
@@ -47,6 +48,10 @@ void writeJSON(rapidjson::Writer<rapidjson::StringBuffer>& writer, const Value& 
         [&] (const Collator&) {
             // Collators are excluded from constant folding and there's no Literal parser
             // for them so there shouldn't be any way to serialize this value.
+            assert(false);
+        },
+        [&] (const Formatted&) {
+            // TODO
             assert(false);
         },
         [&] (const std::vector<Value>& arr) {
@@ -124,6 +129,11 @@ mbgl::Value ValueConverter<mbgl::Value>::fromExpressionValue(const Value& value)
         [&](const Collator&)->mbgl::Value {
             // fromExpressionValue can't be used for Collator values,
             // because they have no meaningful representation as an mbgl::Value
+            assert(false);
+            return mbgl::Value();
+        },
+        [&](const Formatted&)->mbgl::Value {
+           // TODO
             assert(false);
             return mbgl::Value();
         },
