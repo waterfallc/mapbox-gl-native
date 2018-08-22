@@ -475,6 +475,7 @@ void Renderer::Impl::render(const UpdateParameters& updateParameters) {
 
         MBGL_DEBUG_GROUP(parameters.context, "clear");
         parameters.backend.bind();
+        parameters.pass = RenderPass::None;
         if (parameters.debugOptions & MapDebugOptions::Overdraw) {
             parameters.context.clear(Color::black(), ClearDepth::Default, ClearStencil::Default);
         } else if (parameters.contextMode == GLContextMode::Shared) {
@@ -508,6 +509,7 @@ void Renderer::Impl::render(const UpdateParameters& updateParameters) {
                     gl::StencilMode::Replace
                 },
                 gl::ColorMode::disabled(),
+                parameters.cullFaceModeForRenderPass(),
                 parameters.staticData.quadTriangleIndexBuffer,
                 parameters.staticData.tileTriangleSegments,
                 program.computeAllUniformValues(

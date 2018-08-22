@@ -97,4 +97,12 @@ gl::ColorMode PaintParameters::colorModeForRenderPass() const {
     }
 }
 
+gl::CullFaceMode PaintParameters::cullFaceModeForRenderPass() const {
+    if (pass == RenderPass::Pass3D) {
+        return gl::CullFaceMode::Front;
+    }
+
+    return gl::CullFaceMode::Back;
+}
+
 } // namespace mbgl

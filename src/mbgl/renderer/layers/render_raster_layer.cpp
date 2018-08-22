@@ -115,6 +115,7 @@ void RenderRasterLayer::render(PaintParameters& parameters, RenderSource* source
             parameters.depthModeForSublayer(0, gl::DepthMode::ReadOnly),
             gl::StencilMode::disabled(),
             parameters.colorModeForRenderPass(),
+            parameters.cullFaceModeForRenderPass(),
             indexBuffer,
             segments,
             allUniformValues,

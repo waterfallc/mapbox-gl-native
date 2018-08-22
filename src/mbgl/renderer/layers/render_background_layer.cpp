@@ -71,6 +71,7 @@ void RenderBackgroundLayer::render(PaintParameters& parameters, RenderSource*) {
             parameters.depthModeForSublayer(0, gl::DepthMode::ReadOnly),
             gl::StencilMode::disabled(),
             parameters.colorModeForRenderPass(),
+            parameters.cullFaceModeForRenderPass(),
             parameters.staticData.quadTriangleIndexBuffer,
             parameters.staticData.tileTriangleSegments,
             allUniformValues,

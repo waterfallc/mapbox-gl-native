@@ -118,6 +118,7 @@ void RenderSymbolLayer::render(PaintParameters& parameters, RenderSource*) {
                     : gl::DepthMode::disabled(),
                 gl::StencilMode::disabled(),
                 parameters.colorModeForRenderPass(),
+                parameters.cullFaceModeForRenderPass(),
                 *buffers.indexBuffer,
                 buffers.segments,
                 allUniformValues,

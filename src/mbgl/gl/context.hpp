@@ -163,6 +163,8 @@ public:
                optional<float> depth,
                optional<int32_t> stencil);
 
+    void setCullFace(CullFace, optional<CullFaceMode> = CullFaceMode::Back, optional<FrontFace> = FrontFace::CounterClockwise);
+
     void setDrawMode(const Points&);
     void setDrawMode(const Lines&);
     void setDrawMode(const LineStrip&);
@@ -263,6 +265,9 @@ private:
     State<value::ClearStencil> clearStencil;
     State<value::LineWidth> lineWidth;
     State<value::BindRenderbuffer> bindRenderbuffer;
+    State<value::CullFace> cullFace;
+    State<value::CullFaceMode> cullFaceMode;
+    State<value::FrontFace> frontFace;
 #if not MBGL_USE_GLES2
     State<value::PointSize> pointSize;
 #endif // MBGL_USE_GLES2

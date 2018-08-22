@@ -61,6 +61,7 @@ public:
     gl::DepthMode depthModeFor3D(gl::DepthMode::Mask) const;
     gl::StencilMode stencilModeForClipping(const ClipID&) const;
     gl::ColorMode colorModeForRenderPass() const;
+    gl::CullFaceMode cullFaceModeForRenderPass() const;
 
     mat4 matrixForTile(const UnwrappedTileID&, bool aligned = false) const;
 
