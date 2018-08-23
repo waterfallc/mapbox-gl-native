@@ -58,6 +58,12 @@ public:
     jni::Array<jni::Object<geojson::Feature>> querySourceFeatures(jni::JNIEnv&,
                                                                   jni::Array<jni::Object<>> jfilter);
 
+    jni::Array<jni::Object<geojson::Feature>> getChildren(jni::JNIEnv&, jni::jlong);
+
+    jni::Array<jni::Object<geojson::Feature>> getLeaves(jni::JNIEnv&, jni::jlong, jni::jlong, jni::jlong);
+
+    jni::jdouble getClusterExpansionZoom(jni::JNIEnv&, jni::jlong);
+
 private:
     jni::Object<Source> createJavaPeer(jni::JNIEnv&);
     std::unique_ptr<Update> awaitingUpdate;

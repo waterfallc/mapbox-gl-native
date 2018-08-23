@@ -103,6 +103,26 @@ namespace android {
         return *convert<jni::Array<jni::Object<Feature>>, std::vector<mbgl::Feature>>(env, features);
     }
 
+    jni::Array<jni::Object<geojson::Feature>> GeoJSONSource::getChildren(jni::JNIEnv& env, jni::jlong clusterId) {
+        using namespace mbgl::android::conversion;
+        using namespace mbgl::android::geojson;
+
+        std::vector<mbgl::Feature> features = source.as<mbgl::style::GeoJSONSource>()->GeoJSONSource::getChildren(clusterId);
+        return *convert<jni::Array<jni::Object<Feature>>, std::vector<mbgl::Feature>>(env, features);
+    }
+
+    jni::Array<jni::Object<geojson::Feature>> GeoJSONSource::getLeaves(jni::JNIEnv& env, jni::jlong clusterId, jni::jlong limit, jni::jlong offset) {
+        using namespace mbgl::android::conversion;
+        using namespace mbgl::android::geojson;
+
+        std::vector<mbgl::Feature> features = source.as<mbgl::style::GeoJSONSource>()->GeoJSONSource::getLeaves(clusterId, limit, offset);
+        return *convert<jni::Array<jni::Object<Feature>>, std::vector<mbgl::Feature>>(env, features);
+    }
+
+    jni::jdouble GeoJSONSource::getClusterExpansionZoom(jni::JNIEnv&, jni::jlong clusterId) {
+        return source.as<mbgl::style::GeoJSONSource>()->GeoJSONSource::getClusterExpansionZoom(clusterId);
+    }
+
     jni::Class<GeoJSONSource> GeoJSONSource::javaClass;
 
     jni::Object<Source> GeoJSONSource::createJavaPeer(jni::JNIEnv& env) {
@@ -172,7 +192,10 @@ namespace android {
             METHOD(&GeoJSONSource::setGeometry, "nativeSetGeometry"),
             METHOD(&GeoJSONSource::setURL, "nativeSetUrl"),
             METHOD(&GeoJSONSource::getURL, "nativeGetUrl"),
-            METHOD(&GeoJSONSource::querySourceFeatures, "querySourceFeatures")
+            METHOD(&GeoJSONSource::querySourceFeatures, "querySourceFeatures"),
+            METHOD(&GeoJSONSource::getLeaves, "nativeGetLeaves"),
+            METHOD(&GeoJSONSource::getChildren, "nativeGetChildren"),
+            METHOD(&GeoJSONSource::getClusterExpansionZoom, "nativeGetClusterExpansionZoom")
         );
     }
 
