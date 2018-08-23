@@ -154,7 +154,7 @@ void RenderLineLayer::render(PaintParameters& parameters, RenderSource*) {
                      crossfade,
                      parameters.pixelRatio),
                      *posA,
-                     *posB));
+                     *posB);
         } else if (!unevaluated.get<LineGradient>().getValue().isUndefined()) {
             if (!colorRampTexture) {
                 colorRampTexture = parameters.context.createTexture(colorRamp);
@@ -272,7 +272,9 @@ RenderLinePaintProperties::PossiblyEvaluated RenderLineLayer::paintProperties() 
         evaluated.get<style::LineBlur>(),
         evaluated.get<style::LineDasharray>(),
         evaluated.get<style::LinePattern>(),
-        evaluated.get<LineFloorwidth>(),
+        evaluated.get<style::LineGradient>(),
+        evaluated.get<LineFloorwidth>()
+
     };
 }
 
