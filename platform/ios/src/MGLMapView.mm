@@ -1,6 +1,6 @@
 #import "MGLMapView_Private.h"
 
-#include <mbgl/util/logging.hpp>
+#import <os/log.h>
 
 #import <GLKit/GLKit.h>
 #import <OpenGLES/EAGL.h>
@@ -95,6 +95,8 @@ const MGLMapViewPreferredFramesPerSecond MGLMapViewPreferredFramesPerSecondMaxim
 const MGLExceptionName MGLMissingLocationServicesUsageDescriptionException = @"MGLMissingLocationServicesUsageDescriptionException";
 const MGLExceptionName MGLUserLocationAnnotationTypeException = @"MGLUserLocationAnnotationTypeException";
 const MGLExceptionName MGLResourceNotFoundException = @"MGLResourceNotFoundException";
+
+static os_log_t mapview_log;
 
 /// Indicates the manner in which the map view is tracking the user location.
 typedef NS_ENUM(NSUInteger, MGLUserTrackingState) {
@@ -351,6 +353,7 @@ public:
     {
         [MGLSDKUpdateChecker checkForUpdates];
     }
+    mapview_log = os_log_create("com.mapbox.maps-ios-sdk", "MGLMapView");
 }
 
 + (NSSet<NSString *> *)keyPathsForValuesAffectingStyle
@@ -378,7 +381,7 @@ public:
     {
         styleURL = [MGLStyle streetsStyleURLWithVersion:MGLStyleDefaultVersion];
     }
-
+    os_log_debug(mapview_log, "styleURL: %@", styleURL);
     styleURL = styleURL.mgl_URLByStandardizingScheme;
     self.style = nil;
     _mbglMap->getStyle().loadURL([[styleURL absoluteString] UTF8String]);
@@ -402,6 +405,7 @@ public:
 
 - (void)commonInit
 {
+    os_log_info(mapview_log, "Initializing.");
     _isTargetingInterfaceBuilder = NSProcessInfo.processInfo.mgl_isInterfaceBuilderDesignablesAgent;
     _opaque = NO;
 
@@ -599,6 +603,7 @@ public:
         [MGLMapboxEvents pushTurnstileEvent];
         [MGLMapboxEvents pushEvent:MMEEventTypeMapLoad withAttributes:@{}];
     }
+    os_log_info(mapview_log, "Initialization completed.");
 }
 
 - (mbgl::Size)size
@@ -727,6 +732,7 @@ public:
 
 - (void)setDelegate:(nullable id<MGLMapViewDelegate>)delegate
 {
+    os_log_debug(mapview_log, "delegate: %@", delegate);
     if (_delegate == delegate) return;
 
     _delegate = delegate;
