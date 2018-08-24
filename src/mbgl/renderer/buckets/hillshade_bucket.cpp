@@ -31,13 +31,12 @@ void HillshadeBucket::upload(gl::Context& context) {
         return;
     }
 
-
     const PremultipliedImage* image = demdata.getImage();
     dem = context.createTexture(*image);
 
     if (!segments.empty()) {
         vertexBuffer = context.createVertexBuffer(std::move(vertices));
-        indexBuffer = context.createIndexBuffer(std::move(indices));
+        indexBuffer = context.createIndexBuffer(std::move(triangles));
     }
     uploaded = true;
 }
@@ -47,7 +46,7 @@ void HillshadeBucket::clear() {
     indexBuffer = {};
     segments.clear();
     vertices.clear();
-    indices.clear();
+    triangles.clear();
 
     uploaded = false;
 }
@@ -61,7 +60,7 @@ void HillshadeBucket::setMask(TileMask&& mask_) {
     clear();
 
     if (mask == TileMask{ { 0, 0, 0 } }) {
-        // We want to render the full tile, and keeping the segments/vertices/indices empty means
+        // We want to render the full tile, and keeping the segments/vertices/triangles empty means
         // using the global shared buffers for covering the entire tile.
         return;
     }
@@ -77,14 +76,14 @@ void HillshadeBucket::setMask(TileMask&& mask_) {
         // Create a quad for every masked tile.
         const int32_t vertexExtent = util::EXTENT >> id.z;
 
-        const Point<int16_t> tlVertex = { static_cast<int16_t>(id.x * vertexExtent),
+        const Point<int16_t> brVertex = { static_cast<int16_t>(id.x * vertexExtent),
                                           static_cast<int16_t>(id.y * vertexExtent) };
-        const Point<int16_t> brVertex = { static_cast<int16_t>(tlVertex.x + vertexExtent),
-                                          static_cast<int16_t>(tlVertex.y + vertexExtent) };
+        const Point<int16_t> tlVertex = { static_cast<int16_t>(brVertex.x + vertexExtent),
+                                          static_cast<int16_t>(brVertex.y + vertexExtent) };
 
         if (segments.back().vertexLength + vertexLength > std::numeric_limits<uint16_t>::max()) {
             // Move to a new segments because the old one can't hold the geometry.
-            segments.emplace_back(vertices.vertexSize(), indices.indexSize());
+            segments.emplace_back(vertices.vertexSize(), triangles.indexSize());
         }
 
         vertices.emplace_back(
@@ -100,10 +99,13 @@ void HillshadeBucket::setMask(TileMask&& mask_) {
         assert(segment.vertexLength <= std::numeric_limits<uint16_t>::max());
         const uint16_t offset = segment.vertexLength;
 
-        // 0, 1, 2
-        // 1, 2, 3
-        indices.emplace_back(offset, offset + 1, offset + 2);
-        indices.emplace_back(offset + 1, offset + 2, offset + 3);
+        // ┌──────┐
+        // │ 0  1 │ Clockwise winding order: back-facing culling.
+        // │      │ Triangle 1: 0 => 1 => 2
+        // │ 2  3 │ Triangle 2: 1 => 3 => 2
+        // └──────┘
+        triangles.emplace_back(offset, offset + 1, offset + 2);
+        triangles.emplace_back(offset + 1, offset + 3, offset + 2);
 
         segment.vertexLength += vertexLength;
         segment.indexLength += 6;

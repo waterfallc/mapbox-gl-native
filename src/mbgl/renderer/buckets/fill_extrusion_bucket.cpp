@@ -119,8 +119,13 @@ void FillExtrusionBucket::addFeature(const GeometryTileFeature& feature,
                     vertices.emplace_back(
                         FillExtrusionProgram::layoutVertex(p2, perp.x, perp.y, 0, 1, edgeDistance));
 
+                    // ┌──────┐
+                    // │ 0  1 │ Clockwise winding order: back-facing culling.
+                    // │      │ Triangle 1: 0 => 1 => 2
+                    // │ 2  3 │ Triangle 2: 1 => 3 => 2
+                    // └──────┘
                     triangles.emplace_back(triangleIndex, triangleIndex + 1, triangleIndex + 2);
-                    triangles.emplace_back(triangleIndex + 1, triangleIndex + 2, triangleIndex + 3);
+                    triangles.emplace_back(triangleIndex + 1, triangleIndex + 3, triangleIndex + 2);
                     triangleIndex += 4;
                     triangleSegment.vertexLength += 4;
                     triangleSegment.indexLength += 6;
@@ -134,6 +139,7 @@ void FillExtrusionBucket::addFeature(const GeometryTileFeature& feature,
         assert(nIndices % 3 == 0);
 
         for (uint32_t i = 0; i < nIndices; i += 3) {
+            // Clockwise winding order: back-facing culling.
             triangles.emplace_back(flatIndices[indices[i]], flatIndices[indices[i + 1]],
                                    flatIndices[indices[i + 2]]);
         }
