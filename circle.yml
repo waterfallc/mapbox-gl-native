@@ -292,9 +292,8 @@ step-library:
         when: on_fail
         command: |
           export CHANNEL="${SLACK_CHANNEL:=C0F0P5XHR}"
-          export MESSAGE="Build failed for *<$CIRCLE_BUILD_URL|$CIRCLE_JOB>*  build."
           curl -g -H "Content-Type: application/json" -X POST \
-          -d "{\"text\": \"$MESSAGE\", \"channel\": \"$CHANNEL\", \"attachments\": [{\"color\": \"#FC5C3C\",\"title\": \"$CIRCLE_JOB build results\",\"title_link\": \"$CIRCLE_BUILD_URL\"}]}" $SLACK_WEBHOOK_URL
+          -d "{\"channel\": \"$CHANNEL\", \"attachments\": [{\"color\": \"danger\",\"title\": \"$CIRCLE_JOB build results\",\"title_link\": \"$CIRCLE_BUILD_URL\"}]}" $SLACK_WEBHOOK_URL
 
   - &notify-slack-success
       run:
@@ -302,7 +301,7 @@ step-library:
         when: on_success
         command: |
           export CHANNEL="${SLACK_CHANNEL:=C0F0P5XHR}"
-          export MESSAGE="Build succeeded for *<$CIRCLE_BUILD_URL|$CIRCLE_JOB>* nightly build."
+          export MESSAGE="Build succeeded for *<$CIRCLE_BUILD_URL|$CIRCLE_JOB>* build."
           curl -g -H "Content-Type: application/json" -X POST \
           -d "{\"text\": \"$MESSAGE\", \"channel\": \"$CHANNEL\", \"attachments\": [{\"color\": \"good\",\"title\": \"$CIRCLE_JOB build results\",\"title_link\": \"$CIRCLE_BUILD_URL\"}]}" $SLACK_WEBHOOK_URL
 
@@ -839,7 +838,6 @@ jobs:
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
-      SLACK_CHANNEL: C0ACM9Q2C
     steps:
       - run:
           name: Fail
