@@ -4,59 +4,59 @@ workflows:
   version: 2
   default:
     jobs:
-      - nitpick
-      - clang-tidy:
-          filters:
-            branches:
-              ignore: master
-      - android-debug-arm-v7
-      - android-release:
-          filters:
-            tags:
-              only: /android-v.*/
-      - node-clang39-release:
-          filters:
-            tags:
-              only: /node-.*/
-      - node-gcc6-debug:
-          filters:
-            tags:
-              only: /node-.*/
-      - node-macos-release:
-          filters:
-            tags:
-              only: /node-.*/
-      - linux-clang-3.8-libcxx-debug
-      - linux-clang4-sanitize-address
-      - linux-clang4-sanitize-undefined
-      - linux-clang4-sanitize-thread
-      - linux-gcc4.9-debug
-      - linux-gcc5-debug-coverage
+      # - nitpick
+      # - clang-tidy:
+      #     filters:
+      #       branches:
+      #         ignore: master
+      # - android-debug-arm-v7
+      # - android-release:
+      #     filters:
+      #       tags:
+      #         only: /android-v.*/
+      # - node-clang39-release:
+      #     filters:
+      #       tags:
+      #         only: /node-.*/
+      # - node-gcc6-debug:
+      #     filters:
+      #       tags:
+      #         only: /node-.*/
+      # - node-macos-release:
+      #     filters:
+      #       tags:
+      #         only: /node-.*/
+      # - linux-clang-3.8-libcxx-debug
+      # - linux-clang4-sanitize-address
+      # - linux-clang4-sanitize-undefined
+      # - linux-clang4-sanitize-thread
+      # - linux-gcc4.9-debug
+      # - linux-gcc5-debug-coverage
       - ios-debug
-      - ios-release
-      - ios-release-tag:
-          filters:
-            tags:
-              only: /ios-.*/
-            branches:
-              ignore: /.*/
-      - macos-debug
-      - qt4-linux-gcc5-release
-      - qt5-linux-gcc5-release
-      - qt5-macos-debug
-  nightly:
-    triggers:
-      - schedule:
-          cron: "0 5 * * *"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-      - ios-release
-      - ios-sanitize
-      - ios-sanitize-address
-      - ios-static-analyzer
+  #     - ios-release
+  #     - ios-release-tag:
+  #         filters:
+  #           tags:
+  #             only: /ios-.*/
+  #           branches:
+  #             ignore: /.*/
+  #     - macos-debug
+  #     - qt4-linux-gcc5-release
+  #     - qt5-linux-gcc5-release
+  #     - qt5-macos-debug
+  # nightly:
+  #   triggers:
+  #     - schedule:
+  #         cron: "0 5 * * *"
+  #         filters:
+  #           branches:
+  #             only:
+  #               - master
+  #   jobs:
+  #     - ios-release
+  #     - ios-sanitize
+  #     - ios-sanitize-address
+  #     - ios-static-analyzer
 
 step-library:
   - &npm-install
@@ -284,6 +284,27 @@ step-library:
   - &upload-xcode-build-logs
       store_artifacts:
         path: build/logs
+
+
+  - &notify-slack-failure
+      run:
+        name: Send a Slack notification on failure
+        when: on_fail
+        command: |
+          export CHANNEL="${SLACK_CHANNEL:=C0F0P5XHR}"
+          export MESSAGE="Build failed for *<$CIRCLE_BUILD_URL|$CIRCLE_JOB>*  build."
+          curl -g -H "Content-Type: application/json" -X POST \
+          -d "{\"text\": \"$MESSAGE\", \"channel\": \"$CHANNEL\", \"attachments\": [{\"color\": \"#FC5C3C\",\"title\": \"$CIRCLE_JOB build results\",\"title_link\": \"$CIRCLE_BUILD_URL\"}]}" $SLACK_WEBHOOK_URL
+
+  - &notify-slack-success
+      run:
+        name: Send a Slack notification on success
+        when: on_success
+        command: |
+          export CHANNEL="${SLACK_CHANNEL:=C0F0P5XHR}"
+          export MESSAGE="Build succeeded for *<$CIRCLE_BUILD_URL|$CIRCLE_JOB>* nightly build."
+          curl -g -H "Content-Type: application/json" -X POST \
+          -d "{\"text\": \"$MESSAGE\", \"channel\": \"$CHANNEL\", \"attachments\": [{\"color\": \"good\",\"title\": \"$CIRCLE_JOB build results\",\"title_link\": \"$CIRCLE_BUILD_URL\"}]}" $SLACK_WEBHOOK_URL
 
 jobs:
   nitpick:
@@ -818,7 +839,13 @@ jobs:
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
+      SLACK_CHANNEL: C0ACM9Q2C
     steps:
+      - run:
+          name: Fail
+          command: exit 1
+      - *notify-slack-failure
+      - *notify-slack-success
       - checkout
       - *restore-node_modules-cache
       - *npm-install
@@ -851,6 +878,7 @@ jobs:
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
+      SLACK_CHANNEL: C0ACM9Q2C
     steps:
       - checkout
       - *restore-node_modules-cache
@@ -878,6 +906,7 @@ jobs:
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
+      SLACK_CHANNEL: C0ACM9Q2C
     steps:
       - checkout
       - *restore-node_modules-cache
@@ -905,6 +934,7 @@ jobs:
     environment:
       BUILDTYPE: Debug
       HOMEBREW_NO_AUTO_UPDATE: 1
+      SLACK_CHANNEL: C0ACM9Q2C
     steps:
       - checkout
       - *restore-node_modules-cache
@@ -969,6 +999,7 @@ jobs:
     environment:
       BUILDTYPE: Release
       HOMEBREW_NO_AUTO_UPDATE: 1
+      SLACK_CHANNEL: C0ACM9Q2C
     steps:
       - checkout
       - *restore-node_modules-cache
