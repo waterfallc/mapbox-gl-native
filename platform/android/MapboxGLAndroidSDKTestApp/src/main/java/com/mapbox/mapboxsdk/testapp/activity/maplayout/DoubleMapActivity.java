@@ -96,7 +96,7 @@ public class DoubleMapActivity extends AppCompatActivity {
         uiSettings.setAttributionEnabled(false);
         uiSettings.setLogoEnabled(false);
 
-        mapboxMap.setOnMapClickListener(point -> {
+        mapboxMap.addOnMapClickListener(point -> {
           // test if we can open 2 activities after each other
           startActivity(new Intent(mapViewMini.getContext(), DoubleMapActivity.class));
         });
