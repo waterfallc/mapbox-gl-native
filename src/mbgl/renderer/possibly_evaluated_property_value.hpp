@@ -87,16 +87,6 @@ public:
         return constant().value_or(t);
     }
 
-    std::vector<optional<T>> possibleOutputs() const {
-        return this->match(
-            [&] (const Faded<T>& constant_) {
-                return std::vector<optional<T>>{ optional<T>(constant_.to), optional<T>(constant_.from) }; },
-            [&] (const style::PropertyExpression<T>& expression) {
-                return expression.possibleOutputs();
-            }
-        );
-    }
-
     template <class... Ts>
     auto match(Ts&&... ts) const {
         return value.match(std::forward<Ts>(ts)...);
@@ -110,10 +100,10 @@ public:
                 if (!expression.isZoomConstant()) {
                     const T min = expression.evaluate(floor(zoom), feature, defaultValue);
                     const T max = expression.evaluate(floor(zoom) + 1, feature, defaultValue);
-                    return Faded<T> {min, max,  0.0f, 0.0f, 0.0f};
+                    return Faded<T> {min, max};
                 } else {
                     const T evaluated = expression.evaluate(feature, defaultValue);
-                    return Faded<T> {evaluated, evaluated, 0.0f, 0.0f, 0.0f};
+                    return Faded<T> {evaluated, evaluated};
                 }
             }
         );

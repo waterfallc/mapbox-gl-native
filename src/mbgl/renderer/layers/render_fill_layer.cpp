@@ -69,10 +69,12 @@ bool RenderFillLayer::hasTransition() const {
     return unevaluated.hasTransition();
 }
 
+bool RenderFillLayer::hasCrossfade() const {
+    return crossfade.t != 1;
+}
+
 void RenderFillLayer::render(PaintParameters& parameters, RenderSource*) {
-    const auto fillPattern = evaluated.get<FillPattern>();
-    const auto fillPatternValue = fillPattern.constantOr(mbgl::Faded<std::basic_string<char> >{ "temp", "temp", 0.0f, 0.0f, 0.0f});
-    if (fillPatternValue.from.empty()) {
+    if (unevaluated.get<FillPattern>().isUndefined()) {
         for (const RenderTile& tile : renderTiles) {
             auto bucket_ = tile.tile.getBucket<FillBucket>(*baseImpl);
             if (!bucket_) {
@@ -151,7 +153,7 @@ void RenderFillLayer::render(PaintParameters& parameters, RenderSource*) {
         if (parameters.pass != RenderPass::Translucent) {
             return;
         }
-
+        const auto fillPatternValue = evaluated.get<FillPattern>().constantOr(Faded<std::basic_string<char>>{"", ""});
         for (const RenderTile& tile : renderTiles) {
             assert(dynamic_cast<GeometryTile*>(&tile.tile));
             GeometryTile& geometryTile = static_cast<GeometryTile&>(tile.tile);

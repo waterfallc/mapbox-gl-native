@@ -41,6 +41,10 @@ bool RenderRasterLayer::hasTransition() const {
     return unevaluated.hasTransition();
 }
 
+bool RenderRasterLayer::hasCrossfade() const {
+    return false;
+}
+
 static float saturationFactor(float saturation) {
     if (saturation > 0) {
         return 1 - 1 / (1.001 - saturation);

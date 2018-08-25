@@ -47,6 +47,10 @@ bool RenderCircleLayer::hasTransition() const {
     return unevaluated.hasTransition();
 }
 
+bool RenderCircleLayer::hasCrossfade() const {
+    return false;
+}
+
 void RenderCircleLayer::render(PaintParameters& parameters, RenderSource*) {
     if (parameters.pass == RenderPass::Opaque) {
         return;

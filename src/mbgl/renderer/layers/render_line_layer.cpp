@@ -51,7 +51,7 @@ void RenderLineLayer::evaluate(const PropertyEvaluationParameters& parameters) {
     dashArrayParams.useIntegerZoom = true;
 
     evaluated = RenderLinePaintProperties::PossiblyEvaluated(
-        unevaluated.evaluate(parameters).concat(extra.evaluate(dashArrayParams)));
+    unevaluated.evaluate(parameters).concat(extra.evaluate(dashArrayParams)));
 
     crossfade = parameters.getCrossfadeParameters();
 
@@ -63,6 +63,10 @@ void RenderLineLayer::evaluate(const PropertyEvaluationParameters& parameters) {
 
 bool RenderLineLayer::hasTransition() const {
     return unevaluated.hasTransition();
+}
+
+bool RenderLineLayer::hasCrossfade() const {
+    return crossfade.t != 1;
 }
 
 void RenderLineLayer::render(PaintParameters& parameters, RenderSource*) {
@@ -111,11 +115,7 @@ void RenderLineLayer::render(PaintParameters& parameters, RenderSource*) {
                 getID()
             );
         };
-        const auto linepattern = evaluated.get<LinePattern>();
 
-        // need a non-empty placeholder value that will result in the LinePattern program to be
-        // used if the line-pattern value is non-constant
-        const auto linePatternValue = linepattern.constantOr(mbgl::Faded<std::basic_string<char> >{ "temp", "temp", 0.0f, 0.0f, 0.0f});
         if (!evaluated.get<LineDasharray>().from.empty()) {
             const LinePatternCap cap = bucket.layout.get<LineCap>() == LineCapType::Round
                 ? LinePatternCap::Round : LinePatternCap::Square;
@@ -133,9 +133,11 @@ void RenderLineLayer::render(PaintParameters& parameters, RenderSource*) {
                      parameters.pixelsToGLUnits,
                      posA,
                      posB,
+                     crossfade,
                      parameters.lineAtlas.getSize().width), {}, {});
 
-        } else if (!linePatternValue.from.empty()) {
+        } else if (!unevaluated.get<LinePattern>().isUndefined()) {
+            const auto linePatternValue =  evaluated.get<LinePattern>().constantOr(Faded<std::basic_string<char>>{ "", ""});
             assert(dynamic_cast<GeometryTile*>(&tile.tile));
             GeometryTile& geometryTile = static_cast<GeometryTile&>(tile.tile);
             parameters.context.bindTexture(*geometryTile.iconAtlasTexture, 0, gl::TextureFilter::Linear);

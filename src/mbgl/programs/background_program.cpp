@@ -16,7 +16,7 @@ BackgroundPatternUniforms::values(mat4 matrix,
                                   Size atlasSize,
                                   const ImagePosition& a,
                                   const ImagePosition& b,
-                                  const Faded<std::string>& fading,
+                                  const CrossfadeParameters& fading,
                                   const UnwrappedTileID& tileID,
                                   const TransformState& state)
 {

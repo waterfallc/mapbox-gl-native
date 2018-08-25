@@ -151,6 +151,7 @@ public:
                                        const std::array<float, 2>& pixelsToGLUnits,
                                        const LinePatternPos& posA,
                                        const LinePatternPos& posB,
+                                       const CrossfadeParameters& crossfade,
                                        float atlasWidth);
 };
 

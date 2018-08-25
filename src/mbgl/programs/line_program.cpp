@@ -52,9 +52,10 @@ LineSDFProgram::uniformValues(const RenderLinePaintProperties::PossiblyEvaluated
                               const std::array<float, 2>& pixelsToGLUnits,
                               const LinePatternPos& posA,
                               const LinePatternPos& posB,
+                              const CrossfadeParameters& crossfade,
                               float atlasWidth) {
-    const float widthA = posA.width * properties.get<LineDasharray>().fromScale;
-    const float widthB = posB.width * properties.get<LineDasharray>().toScale;
+    const float widthA = posA.width * crossfade.fromScale;
+    const float widthB = posB.width * crossfade.toScale;
 
     std::array<float, 2> scaleA {{
         1.0f / tile.id.pixelsToTileUnits(widthA, state.getIntegerZoom()),
@@ -75,7 +76,7 @@ LineSDFProgram::uniformValues(const RenderLinePaintProperties::PossiblyEvaluated
         uniforms::u_patternscale_b::Value( scaleB ),
         uniforms::u_tex_y_a::Value( posA.y ),
         uniforms::u_tex_y_b::Value( posB.y ),
-        uniforms::u_mix::Value( properties.get<LineDasharray>().t ),
+        uniforms::u_mix::Value( crossfade.t ),
         uniforms::u_sdfgamma::Value( atlasWidth / (std::min(widthA, widthB) * 256.0f * pixelRatio) / 2.0f ),
         uniforms::u_image::Value( 0 )
     );

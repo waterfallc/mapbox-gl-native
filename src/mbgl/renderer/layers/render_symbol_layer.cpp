@@ -69,6 +69,10 @@ bool RenderSymbolLayer::hasTransition() const {
     return unevaluated.hasTransition();
 }
 
+bool RenderSymbolLayer::hasCrossfade() const {
+    return false;
+}
+
 void RenderSymbolLayer::render(PaintParameters& parameters, RenderSource*) {
     if (parameters.pass == RenderPass::Opaque) {
         return;

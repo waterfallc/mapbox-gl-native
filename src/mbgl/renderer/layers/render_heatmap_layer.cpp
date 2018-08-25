@@ -45,6 +45,10 @@ bool RenderHeatmapLayer::hasTransition() const {
     return unevaluated.hasTransition();
 }
 
+bool RenderHeatmapLayer::hasCrossfade() const {
+    return false;
+}
+
 void RenderHeatmapLayer::render(PaintParameters& parameters, RenderSource*) {
     if (parameters.pass == RenderPass::Opaque) {
         return;

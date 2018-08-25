@@ -30,6 +30,7 @@ public:
     void transition(const TransitionParameters&) override;
     void evaluate(const PropertyEvaluationParameters&) override;
     bool hasTransition() const override;
+    bool hasCrossfade() const override;
     void render(PaintParameters&, RenderSource*) override;
 
     RenderLinePaintProperties::PossiblyEvaluated paintProperties() const;
@@ -52,7 +53,6 @@ public:
     // Paint properties
     style::LinePaintProperties::Unevaluated unevaluated;
     RenderLinePaintProperties::PossiblyEvaluated evaluated;
-
 
     const style::LineLayer::Impl& impl() const;
 

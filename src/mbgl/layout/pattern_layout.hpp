@@ -45,7 +45,7 @@ public:
             const typename B::PossiblyEvaluatedPaintProperties evaluatedProps = layer->as<PatternLayer>()->paintProperties();
             layerPaintProperties.emplace(layer->getID(), std::move(evaluatedProps));
             const auto patternProperty = evaluatedProps.template get<typename PatternLayer::PatternProperty>();
-            const auto constantPattern = patternProperty.constantOr(Faded<std::basic_string<char> >{ "", "", 0.0f, 0.0f, 0.0f});
+            const auto constantPattern = patternProperty.constantOr(Faded<std::basic_string<char> >{ "", ""});
             // determine if layer group has any layers that use *-pattern property and add
             // constant pattern dependencies.
             if (!patternProperty.isConstant()) {
@@ -109,8 +109,9 @@ public:
     };
 
     std::map<std::string, typename B::PossiblyEvaluatedPaintProperties> layerPaintProperties;
-
     const std::string bucketLeaderID;
+
+
 private:
     const std::unique_ptr<GeometryTileLayer> sourceLayer;
     std::vector<PatternFeature> features;

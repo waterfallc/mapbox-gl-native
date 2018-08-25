@@ -58,6 +58,10 @@ bool RenderFillExtrusionLayer::hasTransition() const {
     return unevaluated.hasTransition();
 }
 
+bool RenderFillExtrusionLayer::hasCrossfade() const {
+    return crossfade.t != 1;
+}
+
 void RenderFillExtrusionLayer::render(PaintParameters& parameters, RenderSource*) {
     if (parameters.pass == RenderPass::Opaque) {
         return;
@@ -111,9 +115,8 @@ void RenderFillExtrusionLayer::render(PaintParameters& parameters, RenderSource*
                 allAttributeBindings,
                 getID());
         };
-        const auto fillPattern = evaluated.get<FillExtrusionPattern>();
-        const auto fillPatternValue = fillPattern.constantOr(mbgl::Faded<std::basic_string<char> >{ "temp", "temp", 0.0f, 0.0f, 0.0f});
-        if (fillPatternValue.from.empty()) {
+
+        if (unevaluated.get<FillExtrusionPattern>().isUndefined()) {
             for (const RenderTile& tile : renderTiles) {
                 auto bucket_ = tile.tile.getBucket<FillExtrusionBucket>(*baseImpl);
                 if (!bucket_) {
@@ -140,7 +143,7 @@ void RenderFillExtrusionLayer::render(PaintParameters& parameters, RenderSource*
                 if (!bucket_) {
                     continue;
                 }
-
+                const auto fillPatternValue = evaluated.get<FillExtrusionPattern>().constantOr(mbgl::Faded<std::basic_string<char> >{"", ""});
                 assert(dynamic_cast<GeometryTile*>(&tile.tile));
                 GeometryTile& geometryTile = static_cast<GeometryTile&>(tile.tile);
                 optional<ImagePosition> patternPosA = geometryTile.getPattern(fillPatternValue.from);
